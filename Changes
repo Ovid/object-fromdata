@@ -1,5 +1,9 @@
 Revision history for Object-FromData
 
+0.02
+        Fix debugging statement in t/hash.t whose warning caused a faillure on
+        one system.
+
 0.01    2016-08-31
         Throw references at this to get objects
 
