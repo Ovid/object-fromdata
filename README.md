@@ -62,6 +62,11 @@ Please report any bugs or feature requests to `bug-object-fromdata at rt.cpan.or
 the web interface at [http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Object-FromData](http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Object-FromData).  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 
+We've tried to keep the methods minimal, but because we're inheriting from
+`Object::FromData::Array` and `Object::FromData::Hash`, the latter might
+have keys which override the main keys. Those helper functions are not
+strictly necessary if you already know your data structure.
+
 # SUPPORT
 
 You can find documentation for this module with the perldoc command.
