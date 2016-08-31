@@ -62,28 +62,6 @@ sub values {
     return values %{ $self->{hash} };
 }
 
-sub reset {
-    my $self = shift;
-    $self = shift if @_;
-    $self->{current_index} = 0;
-}
-
-sub has_more {
-    my $self = shift;
-    $self = shift if @_;
-    my $keys = $self->{keys};
-    return $self->{current_index} <= $#$keys;
-}
-
-sub each {
-    my $self = shift;
-    $self = shift if @_;
-    my $keys = $self->{keys};
-    return unless $self->{current_index} <= $#$keys;
-    my $key = $self->{keys}[ $self->{current_index}++ ];
-    return $key, $self->$key;
-}
-
 sub is_hashref  {1}
 sub is_arrayref { }
 
@@ -99,34 +77,17 @@ Object::FromData::Hash -> Create an object from a hashref.
 
 Don't instantiate directly using this module. Use C<Object::FromData> instead.
 
+    my %hash = (
+        name   => 'Bob',
+        age    => 27,
+        colors => [qw/red green blue/],
+    );
+
     my $hashref = Object::FromData->new( { ref => \%hash } );
-
-    while ( $hashref->has_more ) {
-        my ( $key, $value ) = $hashref->each;
-        ...
-    }
-
-=head2 C<has_more>
-
-    while ( $hashref->has_more ) {
-        my ( $key, $value ) = $hashref->each;
-        ...
-    }
-
-Returns a boolean indicating if the iterator has been exhausted.
-
-=head2 C<each>
-
-    my ( $key, $value ) = $hashref->each;
-
-Returns the next key and value in the hashref iterator, if any. Check
-C<< $hashref->has_more >> to see if the iterator is exhausted.
-
-=head2 C<reset>
-
-    $hashref->reset;
-
-Resets the iterator to the start.
+    my @keys    = $hashref->keys;
+    my @values  = $hashref->values;
+    say $hashref->name;    # Bob
+    my $arrayref_object = $hashref->colors;    # Object::FromData::Array
 
 =head2 C<is_hashref>
 

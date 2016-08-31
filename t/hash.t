@@ -23,29 +23,16 @@ is $arrayref->num_elems, 3,
 is $arrayref->next, 'un',    '... and we should be able to iterate over it';
 is $arrayref->next, 'deux',  '... and we should be able to iterate over it';
 is $arrayref->next, 'trois', '... and we should be able to iterate over it';
-ok !$arrayref->has_more, '... until we are out of elements';
 is $hashref->hashref->this, 'that',
   '... and we should also store hashrefs correctly';
 
-while ( $hashref->has_more ) {
-    my ( $key, $value ) = $hashref->each;
-    explain $key, $value;
-}
-
 my %bad_keys = (
-    each     => 'hcae',
-    has_more => 'erom_sah',
-    keys     => 'syek',
-    reset    => 'teser',
-    values   => 'seulav',
+    keys   => 'syek',
+    values => 'seulav',
 );
 
 $hashref = Object::FromData->new( { ref => \%bad_keys } );
 
-is $hashref->has_more, 'erom_sah',
-  'If the keys override the base method keys, we should still be able to fetch the value';
-ok +Object::FromData::Hash->has_more($hashref),
-  '... but we can call the method as a class method to get our underlying data';
 is $hashref->keys, 'syek',
   'If the keys override the base method keys, we should still be able to fetch the value';
 eq_or_diff [ sort Object::FromData::Hash->keys($hashref) ],
