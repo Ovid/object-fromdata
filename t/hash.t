@@ -48,7 +48,6 @@ ok +Object::FromData::Hash->has_more($hashref),
   '... but we can call the method as a class method to get our underlying data';
 is $hashref->keys, 'syek',
   'If the keys override the base method keys, we should still be able to fetch the value';
-$DB::single = 1;
 eq_or_diff [ sort Object::FromData::Hash->keys($hashref) ],
   [ sort keys %bad_keys ],
   '... but we can call the method as a class method to get our underlying data';
