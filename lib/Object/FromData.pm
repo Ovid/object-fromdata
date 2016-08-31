@@ -3,6 +3,9 @@ package Object::FromData;
 use 5.006;
 use strict;
 use warnings;
+use Object::FromData::Array;
+use Object::FromData::Hash;
+use Carp 'confess';
 
 =head1 NAME
 
@@ -15,7 +18,6 @@ Version 0.01
 =cut
 
 our $VERSION = '0.01';
-
 
 =head1 SYNOPSIS
 
@@ -39,14 +41,22 @@ if you don't export anything, such as for a purely object-oriented module.
 
 =cut
 
-sub function1 {
-}
+sub new {
+    my ( $class, $arg_for ) = @_;
 
-=head2 function2
-
-=cut
-
-sub function2 {
+    my $ref = $arg_for->{ref}
+      or confess "no ref() supplied to Object::FromData::new";
+    if ( 'ARRAY' eq ref $ref ) {
+        return Object::FromData::Array->new( { arrayref => $ref } );
+    }
+    elsif ( 'HASH' eq ref $ref ) {
+        return Object::FromData::Hash->new( { hashref => $ref } );
+    }
+    else {
+        croak(
+            "Don't know how to convert '$ref' into an object. I only handle arrayrefs and hashrefs"
+        );
+    }
 }
 
 =head1 AUTHOR
@@ -138,4 +148,4 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =cut
 
-1; # End of Object::FromData
+1;    # End of Object::FromData

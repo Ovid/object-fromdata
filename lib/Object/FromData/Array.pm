@@ -4,8 +4,10 @@ use strict;
 use warnings;
 
 sub new {
-    my ( $class, $arrayref ) = @_;
+    my ( $class, $arg_for ) = @_;
 
+    my $arrayref = $arg_for->{arrayref}
+      or die "arrayref argument not passed to Object::FromData::Array::new";
     my @array;
     my $self = {
         array         => \@array,
@@ -16,7 +18,11 @@ sub new {
             push @array => $item;
         }
         elsif ( 'ARRAY' eq ref $item ) {
-            push @array => $class->new($item);
+            push @array => $class->new( { arrayref => $item } );
+        }
+        elsif ( 'HASH' eq ref $item ) {
+            push @array =>
+              Object::FromData::Hash->new( { hashref => $item } );
         }
         else {
             die "Don't yet handle $item";

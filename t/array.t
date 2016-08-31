@@ -1,10 +1,10 @@
 #!/usr/bin/env perl
 
 use Test::Most;
-use Object::FromData::Array;
+use Object::FromData;
 
 my @items = qw( one two three four );
-my $array = Object::FromData::Array->new( \@items );
+my $array = Object::FromData->new( { ref => \@items } );
 
 is $array->elems, 4,
   'We should have the correct number of items in the array';
@@ -19,5 +19,17 @@ ok !$array->has_more,
   'has_more() should tell us when the iterator is exhausted';
 $array->reset;
 ok $array->has_more, '... and when it has been reset';
+
+push @items => [ 1, 2, 3 ], 4;
+$array = Object::FromData->new( { ref => \@items } );
+
+is $array->elems, 6,
+  'We should have the correct number of items in the array';
+$array->next for 1 .. 4;
+my $next = $array->next;
+
+eq_or_diff $next->arrayref, [ 1, 2, 3 ],
+  '... and array refs are stored correctly';
+is $array->next, 4, '... and we can fetch values after them';
 
 done_testing;
