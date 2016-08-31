@@ -1,6 +1,5 @@
 package Object::FromData;
 
-use 5.006;
 use strict;
 use warnings;
 use Object::FromData::Array;
@@ -9,7 +8,7 @@ use Carp 'confess';
 
 =head1 NAME
 
-Object::FromData - The great new Object::FromData!
+Object::FromData - Throw arrayrefs or hashrefs at this to get an object
 
 =head1 VERSION
 
@@ -21,23 +20,49 @@ our $VERSION = '0.01';
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
-
     use Object::FromData;
 
-    my $foo = Object::FromData->new();
-    ...
+    my $object = Object::FromData->new(
+        {   ref => {
+                foo      => 'bar',
+                this     => 'that',
+                _private => 'no method will be created',
+                colors   => [qw/red blue green/],
+                numbers  => {
+                    un    => 1,
+                    deux  => 2,
+                    trois => 3,
+                },
+            },
+        }
+    );
 
-=head1 EXPORT
+    say $object->is_hashref;     # 1
+    say $object->is_arrayref;    # 0
 
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
+    say $object->foo;            # bar
+    say $object->this;           # that
+    say $object->_private;       # BOOM! No such method
 
-=head1 SUBROUTINES/METHODS
+    say $object->numbers->is_hashref;     # 0
+    say $object->numbers->is_arrayref;    # 1
+    say $object->numbers->deux;           # 2
 
-=head2 function1
+    my $colors = $object->colors;
+    while ( $colors->has_more ) {
+        say $colors->next;    # red, blue, green on successive lines
+    }
+
+=head2 C<new>
+
+    my $object = Object::FromData->new({ ref => $ref });
+
+Takes a hashref. The key of C<ref> must be a hashref or arrayref. Returns an
+object. The object represents a hash or an arrayref as created by
+C<Object::FromData::Hash> or C<Object::FromData::Array>.
+
+The primary purpose of this module was to be able to take arbitrary JSON from
+a client and create an object I could safely embed in another object.
 
 =cut
 
@@ -47,10 +72,10 @@ sub new {
     my $ref = $arg_for->{ref}
       or confess "no ref() supplied to Object::FromData::new";
     if ( 'ARRAY' eq ref $ref ) {
-        return Object::FromData::Array->new( { arrayref => $ref } );
+        return Object::FromData::Array->_new( { ref => $ref } );
     }
     elsif ( 'HASH' eq ref $ref ) {
-        return Object::FromData::Hash->new( { hashref => $ref } );
+        return Object::FromData::Hash->_new( { ref => $ref } );
     }
     else {
         croak(
@@ -69,15 +94,11 @@ Please report any bugs or feature requests to C<bug-object-fromdata at rt.cpan.o
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Object-FromData>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 
-
-
-
 =head1 SUPPORT
 
 You can find documentation for this module with the perldoc command.
 
     perldoc Object::FromData
-
 
 You can also look for information at:
 
