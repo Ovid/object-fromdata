@@ -52,28 +52,34 @@ sub _new {
 
 sub keys {
     my $self = shift;
-    return keys %{ $self->{hashref} };
+    $self = shift if @_;
+    return keys %{ $self->{hash} };
 }
 
 sub values {
     my $self = shift;
-    return values %{ $self->{hashref} };
+    $self = shift if @_;
+    return values %{ $self->{hash} };
 }
 
 sub reset {
     my $self = shift;
+    $self = shift if @_;
     $self->{current_index} = 0;
 }
 
 sub has_more {
     my $self = shift;
+    $self = shift if @_;
     my $keys = $self->{keys};
     return $self->{current_index} <= $#$keys;
 }
 
 sub each {
     my $self = shift;
-    return unless $self->has_more;
+    $self = shift if @_;
+    my $keys = $self->{keys};
+    return unless $self->{current_index} <= $#$keys;
     my $key = $self->{keys}[ $self->{current_index}++ ];
     return $key, $self->$key;
 }
@@ -145,3 +151,18 @@ Returns a I<list> of the keys.
     my @values = $hashref->values;
 
 Returns a I<list> of the values.
+
+=head1 HASH KEYS OVERRIDING BUILT IN METHODS
+
+We've tried to keep the methods minimal, but because we're inheriting from
+C<Object::FromData::Hash> and the hash you pass in might have keys which
+override the main keys. If that happens, call the methods as class methods,
+passing in the object as an argument:
+
+    my %hash = (
+        keys => [qw/foo bar baz/],
+    );
+    my $object = Object::FromData->new({ ref => \%hash });
+
+    my @keys = $hash->keys; # returns an Object::FromData::Array instance of foo, bar, and baz
+    my @keys = Object::FromData::Hash->keys($hash); # returns 'keys'

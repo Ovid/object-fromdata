@@ -96,8 +96,16 @@ automatically be notified of progress on your bug as I make changes.
 
 We've tried to keep the methods minimal, but because we're inheriting from
 C<Object::FromData::Array> and C<Object::FromData::Hash>, the latter might
-have keys which override the main keys. Those helper functions are not
-strictly necessary if you already know your data structure.
+have keys which override the main keys. If that happens, call the methods as
+class methods, passing in the object as an argument:
+
+    my %hash = (
+        keys => [qw/foo bar baz/],
+    );
+    my $object = Object::FromData->new({ ref => \%hash });
+
+    my @keys = $hash->keys; # returns an Object::FromData::Array instance of foo, bar, and baz
+    my @keys = Object::FromData::Hash->keys($hash); # returns 'keys'
 
 =head1 SUPPORT
 

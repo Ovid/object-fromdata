@@ -32,4 +32,25 @@ while ( $hashref->has_more ) {
     explain $key, $value;
 }
 
+my %bad_keys = (
+    each     => 'hcae',
+    has_more => 'erom_sah',
+    keys     => 'syek',
+    reset    => 'teser',
+    values   => 'seulav',
+);
+
+$hashref = Object::FromData->new( { ref => \%bad_keys } );
+
+is $hashref->has_more, 'erom_sah',
+  'If the keys override the base method keys, we should still be able to fetch the value';
+ok +Object::FromData::Hash->has_more($hashref),
+  '... but we can call the method as a class method to get our underlying data';
+is $hashref->keys, 'syek',
+  'If the keys override the base method keys, we should still be able to fetch the value';
+$DB::single = 1;
+eq_or_diff [ sort Object::FromData::Hash->keys($hashref) ],
+  [ sort keys %bad_keys ],
+  '... but we can call the method as a class method to get our underlying data';
+
 done_testing;
