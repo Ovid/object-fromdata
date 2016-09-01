@@ -13,6 +13,7 @@ inc/Module/Install/WriteAll.pm
 lib/Object/FromData.pm
 lib/Object/FromData/Array.pm
 lib/Object/FromData/Hash.pm
+META.json
 Makefile.PL
 MANIFEST			This list of files
 README
