@@ -4,48 +4,43 @@ use strict;
 use warnings;
 use Digest::MD5 'md5_hex';    # convenience, not security
 
+our $VERSION = '0.03';
+
 sub _new {
     my ( $class, $arg_for ) = @_;
 
     my $hashref       = $arg_for->{ref};
     my $allow_private = $arg_for->{allow_private} || 0;
-    my @all_keys      = sort CORE::keys %$hashref;
-    my @keys          = $allow_private ? @all_keys : grep { !/^_/ } @all_keys;
+    my @all_keys      = sort( CORE::keys(%$hashref) );
 
-    my $new_class = "${class}::" . md5_hex( join '-' => @keys );
+    my $self = {
+        hash          => {},
+        allow_private => $allow_private,
+        keys => [ $allow_private ? @all_keys : grep { !/^_/ } @all_keys ],
+    };
+    my $new_class = "${class}::" . md5_hex( join '-' => @{ $self->{keys} } );
     {
         no strict 'refs';
         @{"${new_class}::ISA"} = $class;
     }
 
-    my %hash;
-    my $self = {
-        hash          => \%hash,
-        keys          => \@keys,
-        allow_private => $allow_private,
-        current_index => 0,
-    };
-
     KEY: foreach my $key (@all_keys) {
         my $value = $hashref->{$key};
-        if ( !ref $value ) {
-            $hash{$key} = $value;
-        }
-        elsif ( 'ARRAY' eq ref $value ) {
-            $hash{$key}
+        if ( 'ARRAY' eq ref $value ) {
+            $self->{hash}{$key}
               = Object::FromData::Array->_new( { ref => $value } );
         }
         elsif ( 'HASH' eq ref $value ) {
-            $hash{$key} = $class->_new( { ref => $value } );
+            $self->{hash}{$key} = $class->_new( { ref => $value } );
         }
         else {
-            die "Don't yet handle $value";
+            $self->{hash}{$key} = $value;
         }
         if ( $key =~ /^_/ ) {
             next KEY unless $allow_private;
         }
         no strict 'refs';
-        *{"$new_class::$key"} = sub { $hash{$key} };
+        *{"${new_class}::$key"} = sub { $self->{hash}{$key} };
     }
     return bless $self => $new_class;
 }
@@ -71,7 +66,7 @@ __END__
 
 =head1 NAME
 
-Object::FromData::Hash -> Create an object from a hashref.
+Object::FromData::Hash - Create an object from a hashref.
 
 =head1 SYNOPSIS
 

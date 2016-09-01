@@ -3,24 +3,26 @@ package Object::FromData::Array;
 use strict;
 use warnings;
 
+our $VERSION = '0.03';
+
 sub _new {
     my ( $class, $arg_for ) = @_;
 
     my $arrayref = $arg_for->{ref};
-    my @array;
-    my $self = {
-        array         => \@array,
+    my $self     = {
+        array         => [],
         current_index => 0,
     };
     foreach my $item (@$arrayref) {
         if ( 'ARRAY' eq ref $item ) {
-            push @array => $class->_new( { ref => $item } );
+            push @{ $self->{array} } => $class->_new( { ref => $item } );
         }
         elsif ( 'HASH' eq ref $item ) {
-            push @array => Object::FromData::Hash->_new( { ref => $item } );
+            push @{ $self->{array} } =>
+              Object::FromData::Hash->_new( { ref => $item } );
         }
         else {
-            push @array => $item;    # accept it raw
+            push @{ $self->{array} } => $item;    # accept it raw
         }
     }
     return bless $self => $class;
@@ -67,7 +69,7 @@ __END__
 
 =head1 NAME
 
-Object::FromData::Hash -> Create an object from a hashref.
+Object::FromData::Array - Create an object from an arrayref.
 
 =head1 SYNOPSIS
 
