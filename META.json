@@ -1,0 +1,55 @@
+{
+   "abstract" : "Throw arrayrefs or hashrefs at this to get an object",
+   "author" : [
+      "Curtis \"Ovid\" Poe, C<< <ovid at cpan.org> >>
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "ExtUtils::MakeMaker version 7.18, CPAN::Meta::Converter version 2.150005",
+   "license" : [
+      "artistic_2"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "Object-FromData",
+   "no_index" : {
+      "directory" : [
+         "t",
+         "inc"
+      ]
+   },
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "6.59",
+            "Module::Install" : "0",
+            "Test::Most" : "0"
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "0"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "perl" : "5.006"
+         }
+      }
+   },
+   "release_status" : "stable",
+   "version" : "0.01",
+   "x_serialization_backend" : "JSON::PP version 2.27400",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/Ovid/object-fromdata/issues"
+      },
+      "homepage" : "https://github.com/Ovid/object-fromdata",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/Ovid/object-fromdata.git",
+         "web" : "https://github.com/Ovid/object-fromdata"
+      }
+   },
+}
