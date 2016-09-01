@@ -1,6 +1,10 @@
 Revision history for Object-FromData
 
-0.02    20180-08-31 19:16:35
+0.03    2016-09-01
+        - Make it work on older Perls. (sort on unknown subroutine bug)
+        - Tighten up some internals.
+
+0.02    2016-08-31 19:16:35
         - Get rid of each() iterator on hash
         - Fix debugging statement in t/hash.t whose warning caused a faillure on
           one system.
