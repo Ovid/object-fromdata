@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 
-use Test::Most;
+use Test::More;
 use Object::FromData;
 
 my %items = (
@@ -12,7 +12,6 @@ my %items = (
 );
 my $hashref = Object::FromData->new( { ref => \%items } );
 
-explain ref $hashref;
 is $hashref->one, 1, 'We should have methods on our hashref';
 ok !$hashref->can('_private'), '... but not private ones';
 
@@ -35,7 +34,7 @@ $hashref = Object::FromData->new( { ref => \%bad_keys } );
 
 is $hashref->keys, 'syek',
   'If the keys override the base method keys, we should still be able to fetch the value';
-eq_or_diff [ sort Object::FromData::Hash->keys($hashref) ],
+is_deeply [ sort Object::FromData::Hash->keys($hashref) ],
   [ sort keys %bad_keys ],
   '... but we can call the method as a class method to get our underlying data';
 

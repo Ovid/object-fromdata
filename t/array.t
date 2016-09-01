@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 
-use Test::Most;
+use Test::More;
 use Object::FromData;
 
 my @items = qw( one two three four );
